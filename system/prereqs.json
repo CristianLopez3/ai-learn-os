@@ -1,0 +1,13 @@
+{
+  "_comment": "Seed-and-grow topic graph. Add topics as you study them. A topic seen in evidence but missing here is auto-included with no prereqs.",
+  "topics": {
+    "programming-fundamentals": { "name": "Programming Fundamentals", "domain": "programming", "prereqs": [] },
+    "data-structures": { "name": "Data Structures", "domain": "dsa", "prereqs": ["programming-fundamentals"] },
+    "algorithms": { "name": "Algorithms", "domain": "dsa", "prereqs": ["data-structures"] },
+    "networking-basics": { "name": "Networking Basics", "domain": "networking", "prereqs": [] },
+    "tcp": { "name": "TCP", "domain": "networking", "prereqs": ["networking-basics"] },
+    "http": { "name": "HTTP", "domain": "networking", "prereqs": ["tcp"] },
+    "system-design": { "name": "System Design", "domain": "system-design", "prereqs": ["http", "databases"] },
+    "databases": { "name": "Databases", "domain": "databases", "prereqs": ["data-structures"] }
+  }
+}

@@ -1,0 +1,126 @@
+# SPEC — Learning State Engine
+
+> Implementation contract for the `learning-state` skill and its `state.py` script.
+> See `system/DESIGN.md` §4 for rationale. Scope: **Phase 0**.
+
+## 0. Invariants
+
+1. **`progress/evidence.jsonl` is the single source of truth.** Append-only. Never edited or reordered.
+2. **All derived files are disposable.** `progress/topics/*.md` and `progress/DASHBOARD.md` are
+   regenerated from the log; never hand-edited. To fix a mistake, append a correcting evidence row.
+3. **Standard library only.** No `pyyaml`, no `pip install`. Machine-read config is JSON.
+4. **Interpreter:** `C:\Program Files\MSYS2\ucrt64\bin\python.exe` (the PATH `python` is a Store stub).
+
+## 1. Evidence record schema
+
+One JSON object per line in `progress/evidence.jsonl`. Fields:
+
+| field | type | req | notes |
+|---|---|---|---|
+| `ts` | string (ISO-8601 UTC) | yes | auto-filled by `log` if omitted |
+| `topic` | string (kebab-case id) | yes | e.g. `tcp`, `dsa-two-pointers` |
+| `dimension` | enum | yes | `knowledge_depth` \| `problem_solving` \| `application` \| `explanation` \| `interview_performance` |
+| `score` | float [0,1] | yes | 0 = wrong/none, 1 = mastery-level |
+| `difficulty` | enum | no (default `medium`) | `easy`\|`medium`\|`hard` → weight 0.7\|1.0\|1.4 |
+| `mode` | string | no | originating command, e.g. `interview`, `assess` |
+| `notes` | string | no | short human note (what went wrong/right) |
+| `ref` | string | no | repo-relative path to the full artifact/transcript |
+
+A malformed line is **skipped with a warning**, never crashes the reducer (robustness > strictness).
+
+## 2. Config: `system/prereqs.json`
+
+Seed-and-grow topic graph. Shape:
+
+```json
+{ "topics": { "<id>": { "name": "TCP", "domain": "networking", "prereqs": ["ip", "sockets"] } } }
+```
+
+A topic that appears in evidence but not here is auto-included with no prereqs (grow-as-you-go).
+
+## 3. Derivation formulas (Phase 0 = "simple first")
+
+For each (topic, dimension), over its evidence rows:
+
+- **recency weight** `r = 0.5 ** (age_days / HALF_LIFE)`, `HALF_LIFE = 30`.
+- **row weight** `w = difficulty_weight * r`.
+- **dimension score** = `Σ(score·w) / Σ(w)`.
+- **effective n** `n_eff = Σ r` (recency-discounted evidence count).
+- **dimension confidence** = `min(1, n_eff / 4) · (1 − 0.5·stdev(scores))`, clamped [0,1].
+
+Topic-level:
+- **overall_score** = mean of dimension scores present.
+- **overall_confidence** = mean of dimension confidences · `min(1, dims_covered / 3)`
+  (penalize narrow coverage).
+- **weaknesses** = dimensions with score < 0.5, plus any prereq topic whose overall_score < 0.5.
+
+## 4. Mastery ladder (highest gate that passes)
+
+Evaluated top-down; require **breadth**, not one lucky dimension.
+
+| Level | Gate |
+|---|---|
+| Engineering Ready | score ≥ .85 ∧ application ≥ .8 ∧ problem_solving ≥ .8 ∧ conf ≥ .75 |
+| Interview Ready | interview_performance ≥ .75 ∧ score ≥ .75 ∧ conf ≥ .7 |
+| Strong | score ≥ .8 ∧ conf ≥ .7 |
+| Proficient | score ≥ .7 ∧ dims_covered ≥ 3 ∧ conf ≥ .6 |
+| Applied | score ≥ .6 ∧ application ≥ .5 |
+| Practicing | score ≥ .5 |
+| Learning | score ≥ .3 ∧ conf ≥ .3 |
+| Introduced | any evidence |
+| Unknown | no evidence |
+
+## 5. Review scheduling (simple; SM-2 deferred)
+
+- **interval_days** by overall_score: `<.3→2, <.5→4, <.65→8, <.8→16, <.9→32, else 60`,
+  then scaled by `(0.5 + 0.5·confidence)` (low confidence ⇒ sooner).
+- **next_review** = `last_evidence_ts + interval_days`.
+- **review_priority** = `(1 − score) + overdue_bonus`, where `overdue_bonus = clamp(days_overdue/14, 0, 1)`.
+  Higher = review sooner. Drives `/review` ordering.
+
+## 6. CLI
+
+Repo root auto-resolved as `<script>/../../..` (script lives at `.claude/skills/learning-state/state.py`);
+override with `--root PATH`.
+
+| command | effect |
+|---|---|
+| `state.py log '<json>'` | validate + append one evidence row (fills `ts` if absent), then recompute the affected topic |
+| `state.py recompute` | rebuild every `progress/topics/*.md` + `DASHBOARD.md` from the whole log |
+| `state.py show <topic>` | print derived state for one topic as compact text (cheap for Claude to read) |
+| `state.py due [--limit N]` | print topics ordered by `review_priority` (for `/review`) |
+
+`log` accepts either a full JSON string or flags (`--topic --dimension --score [--difficulty --mode --notes --ref]`).
+Exit non-zero only on unrecoverable errors (bad args, unwritable paths).
+
+## 7. Derived file formats
+
+`progress/topics/<topic>.md` — YAML frontmatter (hand-formatted) + a human body:
+
+```markdown
+---
+topic: tcp
+name: TCP
+domain: networking
+mastery: Learning
+overall_score: 0.52
+overall_confidence: 0.41
+next_review: 2026-08-30
+review_priority: 0.63
+dimensions:
+  knowledge_depth: 0.61
+  problem_solving: 0.40
+weaknesses:
+  - problem_solving
+  - congestion-control (prereq)
+evidence_count: 5
+updated: 2026-08-26
+---
+
+# TCP — learning state
+
+_Regenerated by `learning-state`. Do not edit by hand; append evidence instead._
+... recent evidence table ...
+```
+
+`progress/DASHBOARD.md` — table of all topics sorted by `review_priority`, plus counts by mastery level.
