@@ -18,6 +18,8 @@ the learner requested — it does **not** auto-run or replace their current focu
    "done when…" criterion tied to demonstrated capability, not time spent. **Map readings to the
    learner's catalogued books** in `resources/books.md` — cite them by id (`[[id]]`) with specific
    chapters. If a relevant book is catalogued, prefer it; if none fits, say so and suggest sources.
+   When you need the actual content of a chapter (to scope it or summarize), use the `book-extract`
+   skill to pull just those pages.
 4. **Respect constraints** (timeframe, hours/week, interview vs. real-world emphasis). Be realistic
    about pace; front-load the highest-leverage prerequisites.
 5. **Write** the plan to `curricula/<slug>.md` with checkboxes and links to the topics/notes.

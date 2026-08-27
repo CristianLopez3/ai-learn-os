@@ -6,8 +6,9 @@ optimize for **engineering capability**, not documentation volume. When a compon
 that, simplify or drop it.
 
 **Build status:** Phases 0–3 complete — the full design is built: the spine (`learning-state`),
-the 8 mode commands (`.claude/commands/`), the `evaluate-answer` and `knowledge-note` skills, and
-the 3 subagents (`web-researcher`, `grader`, `code-reviewer`). See `system/DESIGN.md`. Extend or
+the 8 mode commands (`.claude/commands/`), the `evaluate-answer`, `knowledge-note`, and
+`book-extract` skills, and the 3 subagents (`web-researcher`, `grader`, `code-reviewer`). The
+learner's book library is catalogued in `resources/books.md`. See `system/DESIGN.md`. Extend or
 refine from here as real use reveals needs; don't add components without a concrete need (P12/25).
 
 ## How to route (intent → behavior)
@@ -70,9 +71,10 @@ mutation — this repo's own state engine is a worked example). Don't force it.
 - **Session artifacts:** interviews/reviews → `reviews/`, assessments → `assessments/`,
   challenges/code → `projects/`, paths → `curricula/`. Link them from evidence rows via `ref`.
 - **External resources (books):** catalogued in `resources/books.md` by stable kebab-case id;
-  cite them in paths/notes as `[[id]]` and map milestones to specific chapters. Actual files go in
+  cite them in paths/notes as `[[id]]` and map milestones to specific chapters. Files are in
   `resources/files/<id>.<ext>` (git-ignored). When building a `/path`, prefer the learner's own
-  catalogued books for readings.
+  catalogued books for readings. To read a book's content, use the **`book-extract`** skill
+  (on-demand page ranges via pdftotext) — never bulk-convert PDFs.
 - **Python:** always `"C:\Program Files\MSYS2\ucrt64\bin\python.exe"` (PATH `python` is a dead stub).
   Scripts are stdlib-only by design.
 - **Dates:** today's date is provided in context; convert relative dates to absolute when writing files.

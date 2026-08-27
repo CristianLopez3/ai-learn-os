@@ -7,3 +7,6 @@ resources/files/*.pdf
 resources/files/*.epub
 resources/files/*.mobi
 resources/files/*.djvu
+
+# Book extracts: local cache of copyrighted text, keep out of git
+resources/extracts/
