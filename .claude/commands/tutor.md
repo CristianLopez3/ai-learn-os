@@ -18,7 +18,9 @@ Teach **$ARGUMENTS** (vision Mode A). Concept-first, then technology as implemen
 4. **Check understanding, then grade.** End with 1–2 recall/application questions. Grade the
    answers with the `evaluate-answer` skill and log evidence via `learning-state`
    (`knowledge_depth`, and `explanation` if they explained back to you).
-5. Offer a concrete next step (a harder angle, a challenge, or a linked prerequisite if one is weak).
+5. **Offer to capture it.** If the session produced durable understanding, offer to save/update a
+   note via the `knowledge-note` skill (don't force it for trivial Q&A).
+6. Offer a concrete next step (a harder angle, a challenge, or a linked prerequisite if one is weak).
 
 Don't confuse a clear explanation *by me* with mastery *by them* (P1) — the evidence comes from
 their recall, not my delivery.

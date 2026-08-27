@@ -5,11 +5,10 @@ Full vision: `initial-prompt.md`. Engineering design: `system/DESIGN.md`. Goal (
 optimize for **engineering capability**, not documentation volume. When a component doesn't serve
 that, simplify or drop it.
 
-**Build status:** Phases 0–1 complete — the spine (`learning-state`) plus the 8 mode commands
-(`.claude/commands/`) and the `evaluate-answer` skill. Not yet built: Phase 2 subagents
-(`web-researcher`, `grader`, `code-reviewer`) and Phase 3 (`knowledge-note` skill, `prereqs`
-growth) — see `system/DESIGN.md` §12. If asked to do something a not-yet-built piece would
-handle, do it inline in the spirit of the design.
+**Build status:** Phases 0–3 complete — the full design is built: the spine (`learning-state`),
+the 8 mode commands (`.claude/commands/`), the `evaluate-answer` and `knowledge-note` skills, and
+the 3 subagents (`web-researcher`, `grader`, `code-reviewer`). See `system/DESIGN.md`. Extend or
+refine from here as real use reveals needs; don't add components without a concrete need (P12/25).
 
 ## How to route (intent → behavior)
 
@@ -27,7 +26,7 @@ in plain language rather than typing the command.
 | an assessment | **Assess:** multi-dimension diagnostic; report strengths/weaknesses/next actions; log per dimension. |
 | a coding/engineering challenge | **Challenge:** build a realistic, deliberately imperfect system; **don't solve it for them**; log `problem_solving`/`application`. |
 | a learning path | **Path:** read state + `system/prereqs.json`; produce a plan into `curricula/`. Never auto-run it. |
-| research on a topic | Do focused research using the Tier 1–5 source hierarchy (vision §10). (Dedicated `web-researcher` subagent lands in Phase 2.) |
+| research on a topic | Delegate to the `web-researcher` subagent (Tier 1–5 source hierarchy, vision §10); it saves a note under `knowledge/` and reports back. |
 
 ## The ability model — read before teaching, write after grading
 
@@ -66,8 +65,8 @@ mutation — this repo's own state engine is a worked example). Don't force it.
 ## Conventions
 
 - **Topic ids:** kebab-case (`tcp`, `dsa-two-pointers`). New topics grow `system/prereqs.json` as studied.
-- **Knowledge notes:** Markdown in `knowledge/<domain>/`, Obsidian `[[wikilinks]]`, YAML frontmatter.
-  (Formal `knowledge-note` skill arrives in Phase 3.)
+- **Knowledge notes:** use the `knowledge-note` skill — Markdown in `knowledge/<domain>/`, Obsidian
+  `[[wikilinks]]`, YAML frontmatter; grow `system/prereqs.json` as new topics appear.
 - **Session artifacts:** interviews/reviews → `reviews/`, assessments → `assessments/`,
   challenges/code → `projects/`, paths → `curricula/`. Link them from evidence rows via `ref`.
 - **Python:** always `"C:\Program Files\MSYS2\ucrt64\bin\python.exe"` (PATH `python` is a dead stub).

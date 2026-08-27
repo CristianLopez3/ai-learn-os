@@ -24,7 +24,8 @@ not adversarial.
 4. **Write the transcript** to `reviews/<date>-<type>-<topic>.md` (or `interview-preparation/`).
 5. **Debrief and grade.** Score `interview_performance` (always) plus `problem_solving` /
    `knowledge_depth` / `application` as exercised, via `evaluate-answer` + `learning-state`, with
-   `ref` pointing at the transcript. Then give honest feedback: what a real interviewer would think,
-   the specific gaps, and how to close them.
+   `ref` pointing at the transcript. For a long transcript, delegate grading to the `grader`
+   subagent (pass it the transcript path) to keep this thread clean. Then give honest feedback:
+   what a real interviewer would think, the specific gaps, and how to close them.
 
 Maintain interview realism over teaching-mode friendliness during the interview; teach in the debrief.
