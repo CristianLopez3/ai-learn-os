@@ -15,7 +15,9 @@ the learner requested — it does **not** auto-run or replace their current focu
    weaknesses block progress* ("system design needs HTTP + databases, and databases is at 0.3").
 3. **Sequence the path** prerequisite-first: ordered milestones, each with concrete activities
    mapped to the modes (`/tutor`, `/questions`, `/challenge`, `/interview`, `/review`) and a clear
-   "done when…" criterion tied to demonstrated capability, not time spent.
+   "done when…" criterion tied to demonstrated capability, not time spent. **Map readings to the
+   learner's catalogued books** in `resources/books.md` — cite them by id (`[[id]]`) with specific
+   chapters. If a relevant book is catalogued, prefer it; if none fits, say so and suggest sources.
 4. **Respect constraints** (timeframe, hours/week, interview vs. real-world emphasis). Be realistic
    about pace; front-load the highest-leverage prerequisites.
 5. **Write** the plan to `curricula/<slug>.md` with checkboxes and links to the topics/notes.

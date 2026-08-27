@@ -69,6 +69,10 @@ mutation — this repo's own state engine is a worked example). Don't force it.
   `[[wikilinks]]`, YAML frontmatter; grow `system/prereqs.json` as new topics appear.
 - **Session artifacts:** interviews/reviews → `reviews/`, assessments → `assessments/`,
   challenges/code → `projects/`, paths → `curricula/`. Link them from evidence rows via `ref`.
+- **External resources (books):** catalogued in `resources/books.md` by stable kebab-case id;
+  cite them in paths/notes as `[[id]]` and map milestones to specific chapters. Actual files go in
+  `resources/files/<id>.<ext>` (git-ignored). When building a `/path`, prefer the learner's own
+  catalogued books for readings.
 - **Python:** always `"C:\Program Files\MSYS2\ucrt64\bin\python.exe"` (PATH `python` is a dead stub).
   Scripts are stdlib-only by design.
 - **Dates:** today's date is provided in context; convert relative dates to absolute when writing files.
