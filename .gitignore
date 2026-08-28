@@ -10,3 +10,6 @@ resources/files/*.djvu
 
 # Book extracts: local cache of copyrighted text, keep out of git
 resources/extracts/
+
+# Voice-practice prompts: regenerated from learning-state on demand, ephemeral
+voice-prompts/

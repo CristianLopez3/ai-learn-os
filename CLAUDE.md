@@ -6,10 +6,11 @@ optimize for **engineering capability**, not documentation volume. When a compon
 that, simplify or drop it.
 
 **Build status:** Phases 0–3 complete — the full design is built: the spine (`learning-state`),
-the 8 mode commands (`.claude/commands/`), the `evaluate-answer`, `knowledge-note`, and
-`book-extract` skills, and the 3 subagents (`web-researcher`, `grader`, `code-reviewer`). The
-learner's book library is catalogued in `resources/books.md`. See `system/DESIGN.md`. Extend or
-refine from here as real use reveals needs; don't add components without a concrete need (P12/25).
+the 8 mode commands (`.claude/commands/`), the `evaluate-answer`, `knowledge-note`,
+`book-extract`, and `voice-practice-prompt` skills, and the 3 subagents (`web-researcher`,
+`grader`, `code-reviewer`). The learner's book library is catalogued in `resources/books.md`. See
+`system/DESIGN.md`. Extend or refine from here as real use reveals needs; don't add components
+without a concrete need (P12/25).
 
 ## How to route (intent → behavior)
 
@@ -28,6 +29,7 @@ in plain language rather than typing the command.
 | a coding/engineering challenge | **Challenge:** build a realistic, deliberately imperfect system; **don't solve it for them**; log `problem_solving`/`application`. |
 | a learning path | **Path:** read state + `system/prereqs.json`; produce a plan into `curricula/`. Never auto-run it. |
 | research on a topic | Delegate to the `web-researcher` subagent (Tier 1–5 source hierarchy, vision §10); it saves a note under `knowledge/` and reports back. |
+| to practice explaining a topic out loud away from this repo (mobile/voice) | Use the `voice-practice-prompt` skill: generate a self-contained prompt seeded with their real mastery/weaknesses, hand it over, then log the debrief they bring back as evidence. |
 
 ## The ability model — read before teaching, write after grading
 
