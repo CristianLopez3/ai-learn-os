@@ -78,6 +78,21 @@ lucky answer.
 
 ---
 
+## Skills (used automatically, or invoke by name)
+
+Skills are capabilities the modes above call into — you don't usually invoke them directly, but
+you can ask for them by name when the situation fits.
+
+| Skill | What it does |
+|---|---|
+| `learning-state` | The ability-model engine: append-only evidence log + deterministic reducer. Every mode reads it before teaching and writes to it after grading. |
+| `evaluate-answer` | Grades a response into calibrated 0–1 scores per dimension, with a diagnostic reason — used by every mode before logging evidence. |
+| `knowledge-note` | Saves durable understanding as an Obsidian-style note in `knowledge/` (wikilinks, frontmatter), growing the topic graph. |
+| `book-extract` | Pulls a specific chapter/page range from a book you own (`resources/books.md`) on demand via `pdftotext` — no bulk PDF-to-Markdown conversion, just the pages needed for a path or explanation. |
+| `voice-practice-prompt` | Generates a self-contained prompt for practicing an explanation **out loud** in Claude mobile/desktop — for when you're away from this repo. Seeds it with your real mastery/weaknesses, then logs the debrief you bring back as evidence. |
+
+---
+
 ## A suggested learning loop
 
 1. **Baseline** a topic with `/assess <topic>`.
@@ -111,7 +126,7 @@ interview-preparation/ Interview history & prep
 .claude/
   commands/            The 8 mode commands
   agents/              web-researcher, grader, code-reviewer (isolated, one-shot helpers)
-  skills/              learning-state, evaluate-answer, knowledge-note
+  skills/              learning-state, evaluate-answer, knowledge-note, book-extract, voice-practice-prompt
 ```
 
 ---
